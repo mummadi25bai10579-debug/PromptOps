@@ -1,0 +1,140 @@
+{
+  "entities": {
+    "Workspace": {
+      "title": "Workspace",
+      "description": "Represents a team workspace for collaborative AI asset generation and prompt management.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 500 },
+        "ownerId": { "type": "string" },
+        "ownerEmail": { "type": "string" },
+        "avatarUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "ownerId"]
+    },
+    "WorkspaceMember": {
+      "title": "WorkspaceMember",
+      "description": "Represents a member within a specific workspace.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "workspaceId": { "type": "string" },
+        "userId": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["owner", "admin", "editor", "viewer"] },
+        "status": { "type": "string", "enum": ["online", "offline"] },
+        "joinedAt": { "type": "string", "format": "date-time" },
+        "lastActive": { "type": "string", "format": "date-time" }
+      },
+      "required": ["workspaceId", "email", "role"]
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "Represents a comment or reply on a generated asset or prompt within a workspace.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "workspaceId": { "type": "string" },
+        "assetId": { "type": "string" },
+        "assetTitle": { "type": "string" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorEmail": { "type": "string" },
+        "authorAvatar": { "type": "string" },
+        "content": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "mentions": { "type": "array" },
+        "parentId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "isEdited": { "type": "boolean" }
+      },
+      "required": ["workspaceId", "assetId", "authorId", "content"]
+    },
+    "ActivityLog": {
+      "title": "ActivityLog",
+      "description": "Represents an audit log entry of team actions within a workspace.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "workspaceId": { "type": "string" },
+        "actorId": { "type": "string" },
+        "actorName": { "type": "string" },
+        "actorEmail": { "type": "string" },
+        "actorAvatar": { "type": "string" },
+        "action": {
+          "type": "string",
+          "enum": [
+            "generated_asset",
+            "deleted_asset",
+            "edited_prompt",
+            "downloaded_asset",
+            "member_joined",
+            "member_left",
+            "role_changed",
+            "workspace_created",
+            "shared_project",
+            "comment_added"
+          ]
+        },
+        "details": { "type": "string", "maxLength": 500 },
+        "targetType": { "type": "string" },
+        "targetId": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["workspaceId", "actorId", "action", "details"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "Represents real-time user alerts for invitations, mentions, comments, and sharing.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "workspaceId": { "type": "string" },
+        "recipientEmail": { "type": "string" },
+        "recipientUserId": { "type": "string" },
+        "actorId": { "type": "string" },
+        "actorName": { "type": "string" },
+        "actorAvatar": { "type": "string" },
+        "type": {
+          "type": "string",
+          "enum": ["invitation", "comment", "mention", "shared_asset", "completed_generation"]
+        },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "link": { "type": "string" },
+        "assetId": { "type": "string" },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["recipientEmail", "type", "title", "message"]
+    }
+  },
+  "firestore": {
+    "/workspaces/{workspaceId}": {
+      "schema": { "$ref": "#/entities/Workspace" },
+      "description": "Workspaces root collection"
+    },
+    "/workspaceMembers/{memberId}": {
+      "schema": { "$ref": "#/entities/WorkspaceMember" },
+      "description": "Workspace members mapping"
+    },
+    "/comments/{commentId}": {
+      "schema": { "$ref": "#/entities/Comment" },
+      "description": "Asset comments and discussion threads"
+    },
+    "/activityLogs/{logId}": {
+      "schema": { "$ref": "#/entities/ActivityLog" },
+      "description": "Team activity logs and audit trail"
+    },
+    "/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/Notification" },
+      "description": "Real-time team notifications"
+    }
+  }
+}

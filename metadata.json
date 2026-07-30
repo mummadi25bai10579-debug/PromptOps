@@ -1,0 +1,6 @@
+{
+  "name": "PromptOps AI",
+  "description": "An intelligent AI media workflow platform that helps creators generate, organize, compare, search, and manage AI-generated images, videos, audio, and text.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

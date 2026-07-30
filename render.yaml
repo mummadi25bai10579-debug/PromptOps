@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: promptops-ai-backend
+    env: node
+    plan: starter
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: B2_APPLICATION_KEY_ID
+        sync: false
+      - key: B2_APPLICATION_KEY
+        sync: false
+      - key: B2_BUCKET_NAME
+        value: promptops-media
+      - key: B2_ENDPOINT
+        value: https://s3.us-west-004.backblazeb2.com
+      - key: B2_REGION
+        value: us-west-004
+      - key: ALLOWED_ORIGINS
+        value: https://promptops.ai,https://promptops.vercel.app

@@ -1,0 +1,27 @@
+[
+  {
+    "corsRuleName": "promptops-b2-cors",
+    "allowedOrigins": [
+      "https://promptops.ai",
+      "https://*.vercel.app",
+      "http://localhost:3000",
+      "http://localhost:5173"
+    ],
+    "allowedOperations": [
+      "s3_get",
+      "s3_put",
+      "s3_post",
+      "s3_delete",
+      "s3_head"
+    ],
+    "allowedHeaders": [
+      "*"
+    ],
+    "exposeHeaders": [
+      "ETag",
+      "x-amz-request-id",
+      "x-amz-id-2"
+    ],
+    "maxAgeSeconds": 3600
+  }
+]

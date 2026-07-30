@@ -1,0 +1,106 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper Functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create, update: if isOwner(userId);
+      allow delete: if isOwner(userId);
+    }
+
+    match /projects/{projectId} {
+      allow read, list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn();
+    }
+
+    match /generations/{generationId} {
+      allow read, list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn();
+    }
+
+    // Team Collaboration Collections
+    match /workspaces/{workspaceId} {
+      allow read, list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn();
+    }
+
+    match /workspaceMembers/{memberId} {
+      allow read, list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn();
+    }
+
+    match /comments/{commentId} {
+      allow read, list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn();
+    }
+
+    match /activityLogs/{logId} {
+      allow read, list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn();
+    }
+
+    match /notifications/{notificationId} {
+      allow read, list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn();
+    }
+
+    match /sharedFolders/{folderId} {
+      allow read, list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn();
+    }
+
+    // Business Builder Collections
+    match /businesses/{businessId} {
+      allow read, list, create, update, delete: if true;
+    }
+
+    match /businessPlans/{planId} {
+      allow read, list, create, update, delete: if true;
+    }
+
+    match /workflows/{workflowId} {
+      allow read, list, create, update, delete: if true;
+    }
+
+    match /workflowRuns/{runId} {
+      allow read, list, create, update, delete: if true;
+    }
+
+    match /agentTasks/{taskId} {
+      allow read, list, create, update, delete: if true;
+    }
+
+    match /generatedAssets/{assetId} {
+      allow read, list, create, update, delete: if true;
+    }
+
+    match /projectTasks/{taskId} {
+      allow read, list, create, update, delete: if true;
+    }
+
+    match /analytics/{analyticsId} {
+      allow read, list, create, update, delete: if true;
+    }
+  }
+}

@@ -1,0 +1,35 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Helper Functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isImageOrVideo() {
+      return request.resource.contentType.matches('image/.*')
+          || request.resource.contentType.matches('video/.*')
+          || request.resource.contentType.matches('audio/.*');
+    }
+
+    function isSmallFile() {
+      return request.resource.size < 50 * 1024 * 1024; // 50MB
+    }
+
+    // User Media Uploads
+    match /users/{userId}/{allPaths=**} {
+      allow read: if isSignedIn();
+      allow write: if isOwner(userId) && isImageOrVideo() && isSmallFile();
+    }
+
+    // Shared Workspace Media
+    match /workspaces/{workspaceId}/{allPaths=**} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isSmallFile();
+    }
+  }
+}
